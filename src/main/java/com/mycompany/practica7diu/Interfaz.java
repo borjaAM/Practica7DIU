@@ -1,5 +1,7 @@
 package com.mycompany.practica7diu;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.image.BufferedImage;
@@ -22,21 +24,24 @@ public class Interfaz extends javax.swing.JFrame {
     private File file;
     private Mat imagenOriginal;
     private BufferedImage img;
+    private EstadisticasImagen estadistica;
     
     class MiListener implements AdjustmentListener{
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent ae) {
-            System.out.println("Barra desplazada");
-            System.out.println("Posición: " + panelDeslizable1.getViewport().getViewPosition().toString());
-            System.out.println("Tamaño: " + panelDeslizable1.getViewport().getExtentSize().toString());
+            if(img != null){
+                Dimension dimension = new Dimension(img.getWidth(), img.getHeight());
+                updateTextRGB(imagenOriginal, panelDeslizable1.getViewport().getViewPosition(),
+                    calculateViewImagenSize(dimension,panelDeslizable1.getViewport().getExtentSize()));
+            }
         }
     }
 
     public Interfaz() {
         initComponents();
         fc.addChoosableFileFilter(filter);
-        
+        estadistica = new EstadisticasImagen();
         nu.pattern.OpenCV.loadShared();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         
@@ -86,22 +91,31 @@ public class Interfaz extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cálculo componentes RGB de una imagen");
+        setBackground(new java.awt.Color(230, 247, 240));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Componentes RGB de la imagen"));
+        jPanel1.setBackground(new java.awt.Color(95, 182, 182));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Componentes RGB de la imagen", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Yu Gothic UI", 0, 12))); // NOI18N
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Valor Máximo"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Valor Máximo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Yu Gothic UI", 0, 12))); // NOI18N
+        jPanel3.setPreferredSize(new java.awt.Dimension(169, 174));
 
+        jLabel4.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel4.setText("Rojo");
 
         maxR.setEditable(false);
+        maxR.setBackground(new java.awt.Color(255, 216, 210));
 
+        jLabel5.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel5.setText("Verde");
 
         maxG.setEditable(false);
+        maxG.setBackground(new java.awt.Color(204, 255, 204));
 
+        jLabel6.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel6.setText("Azul");
 
         maxB.setEditable(false);
+        maxB.setBackground(new java.awt.Color(204, 255, 255));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -111,18 +125,18 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(maxR, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                         .addComponent(maxG, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(maxR, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(maxB, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,22 +153,28 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(maxB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Valor Mínimo"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Valor Mínimo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Yu Gothic UI", 0, 12))); // NOI18N
         jPanel4.setPreferredSize(new java.awt.Dimension(169, 174));
 
         minR.setEditable(false);
+        minR.setBackground(new java.awt.Color(255, 216, 210));
 
         minG.setEditable(false);
+        minG.setBackground(new java.awt.Color(204, 255, 204));
 
         minB.setEditable(false);
+        minB.setBackground(new java.awt.Color(204, 255, 255));
 
+        jLabel7.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel7.setText("Rojo");
 
+        jLabel8.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel8.setText("Verde");
 
+        jLabel9.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel9.setText("Azul");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -194,23 +214,29 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(minB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Valor Promedio"));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Valor Promedio", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Yu Gothic UI", 0, 12))); // NOI18N
         jPanel5.setPreferredSize(new java.awt.Dimension(169, 174));
 
+        jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel10.setText("Rojo");
 
+        jLabel11.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel11.setText("Verde");
 
+        jLabel12.setFont(new java.awt.Font("Yu Gothic UI", 1, 11)); // NOI18N
         jLabel12.setText("Azul");
 
         promB.setEditable(false);
+        promB.setBackground(new java.awt.Color(204, 255, 255));
 
         promG.setEditable(false);
+        promG.setBackground(new java.awt.Color(204, 255, 204));
 
         promR.setEditable(false);
+        promR.setBackground(new java.awt.Color(255, 216, 210));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -229,7 +255,7 @@ public class Interfaz extends javax.swing.JFrame {
                         .addComponent(promR, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                         .addComponent(promG, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -248,7 +274,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(promB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -256,12 +282,14 @@ public class Interfaz extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,7 +303,10 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Imagen"));
+        jPanel7.setBackground(new java.awt.Color(95, 182, 182));
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Imagen", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Yu Gothic UI", 0, 12))); // NOI18N
+
+        panelDeslizable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout lienzo1Layout = new javax.swing.GroupLayout(lienzo1);
         lienzo1.setLayout(lienzo1Layout);
@@ -296,7 +327,7 @@ public class Interfaz extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelDeslizable1, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE)
+                .addComponent(panelDeslizable1, javax.swing.GroupLayout.DEFAULT_SIZE, 808, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -306,10 +337,14 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jMenuBar1.setBackground(new java.awt.Color(234, 230, 246));
+
         jMenu1.setMnemonic('f');
-        jMenu1.setText("File");
+        jMenu1.setText("Archivo");
+        jMenu1.setFont(new java.awt.Font("Yu Gothic UI", 0, 12)); // NOI18N
 
         jMIabrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMIabrir.setFont(new java.awt.Font("Yu Gothic UI", 0, 12)); // NOI18N
         jMIabrir.setText("Abrir imagen");
         jMIabrir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -320,6 +355,7 @@ public class Interfaz extends javax.swing.JFrame {
         jMenu1.add(jSeparator1);
 
         jMIcerrar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMIcerrar.setFont(new java.awt.Font("Yu Gothic UI", 0, 12)); // NOI18N
         jMIcerrar.setText("Cerrar");
         jMIcerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -337,21 +373,19 @@ public class Interfaz extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(14, 14, 14)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(16, 16, 16)
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(24, 24, 24))
         );
 
@@ -361,11 +395,16 @@ public class Interfaz extends javax.swing.JFrame {
     private void jMIabrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIabrirActionPerformed
         int option = fc.showOpenDialog(this);
         file = fc.getSelectedFile();
+        updateScrollPanel();
+        
         if(option == JFileChooser.APPROVE_OPTION){
             if(comprobarExtension(file)){
                 imagenOriginal = Imgcodecs.imread(file.getPath());
                 img = (BufferedImage) HighGui.toBufferedImage(imagenOriginal);
                 lienzo1.setImagen(img);
+                updateTextRGB(imagenOriginal, panelDeslizable1.getViewport().getViewPosition(),
+                       calculateViewImagenSize(
+                           new Dimension(img.getWidth(),img.getHeight()),panelDeslizable1.getViewport().getExtentSize()));
             } else {
                 JOptionPane.showMessageDialog(this, "Solo se pueden abrir archivos con extensión .jpg o .png.");
             }
@@ -381,6 +420,47 @@ public class Interfaz extends javax.swing.JFrame {
 
     private boolean comprobarExtension(File file){
         return file.getName().endsWith(".jpg") || file.getName().endsWith(".png");
+    }
+    
+    private void updateTextRGB(Mat imagen, Point esquinaSI, Dimension dimension) {
+       estadistica.calculaEstadisticas(imagen, esquinaSI, dimension);
+       int[] rgbMax = estadistica.getMaximo();
+       int[] rgbMin = estadistica.getMinimo();
+       int[] rgbProm = estadistica.getPromedio();
+       
+       maxR.setText(""+ rgbMax[estadistica.ROJO]);
+       minR.setText(""+ rgbMin[estadistica.ROJO]);
+       promR.setText(""+ rgbProm[estadistica.ROJO]);
+       
+       maxG.setText(""+ rgbMax[estadistica.VERDE]);
+       minG.setText(""+ rgbMin[estadistica.VERDE]);
+       promG.setText(""+ rgbProm[estadistica.VERDE]);
+       
+       maxB.setText(""+ rgbMax[estadistica.AZUL]);
+       minB.setText(""+ rgbMin[estadistica.AZUL]);
+       promB.setText(""+ rgbProm[estadistica.AZUL]);
+       
+    }
+    
+    private void updateScrollPanel() {
+       barraV.setValue(0);
+       barraH.setValue(0);
+       barraV.setVisible(true);
+       barraH.setVisible(true);
+       panelDeslizable1.repaint();
+    }
+    
+    private Dimension calculateViewImagenSize(Dimension imagenSize, Dimension scrollSize) {
+        if(imagenSize.width< scrollSize.width){
+            if(imagenSize.height < scrollSize.height){
+                return imagenSize;
+            }else{
+                return new Dimension(imagenSize.width, scrollSize.height);
+            }
+        }else if(imagenSize.height < scrollSize.height){
+            return new Dimension(scrollSize.width, imagenSize.height);
+        }
+        return scrollSize;
     }
     
     /**
