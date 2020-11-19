@@ -445,8 +445,8 @@ public class Interfaz extends javax.swing.JFrame {
     private void updateScrollPanel() {
        barraV.setValue(0);
        barraH.setValue(0);
-       barraV.setVisible(true);
-       barraH.setVisible(true);
+       panelDeslizable1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+       panelDeslizable1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
        panelDeslizable1.repaint();
     }
     
